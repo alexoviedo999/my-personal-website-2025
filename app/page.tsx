@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import { Suspense } from 'react'
 
 const Logo = dynamic(() => import('@/components/canvas/Examples').then((mod) => mod.Logo), { ssr: false })
@@ -32,61 +33,61 @@ const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mo
 export default function Page() {
   return (
     <>
-      <div className='mx-auto flex w-full flex-col flex-wrap items-center md:flex-row  lg:w-4/5'>
-        {/* jumbo */}
-        <div className='relative'>
-          <div className='relative z-10 mx-auto flex w-full flex-col flex-wrap items-center md:flex-row lg:w-4/5'>
-            <p className='w-full uppercase'>Next + React Three Fiber</p>
-            <h1 className='my-4 text-5xl font-bold leading-tight'>Next 3D Starter</h1>
-            <p className='mb-8 text-2xl leading-normal'>
-              A minimalist starter for React, React-three-fiber and Threejs.
-            </p>
-          </div>
-
-          <div className='relative mx-auto -mt-60 flex w-full flex-col flex-wrap items-center p-12 md:flex-row lg:w-4/5'>
-            <View className='flex h-96 w-full flex-col items-center justify-center'>
-              <Suspense fallback={null}>
-                <Logo route='/blob' scale={0.6} position={[0, 0, 0]} />
-                <Common color={'lightblue'} />
-              </Suspense>
-            </View>
-          </div>
-        </div>
-      </div>
-
-      {/* <div className='mx-auto flex w-full flex-col flex-wrap items-center p-12 md:flex-row  lg:w-4/5'> */}
-      {/* first row */}
-      {/* <div className='relative h-48 w-full py-6 sm:w-1/2 md:my-12 md:mb-40'>
-          <h2 className='mb-3 text-3xl font-bold leading-none text-gray-800'>Events are propagated</h2>
-          <p className='mb-8 text-gray-600'>Drag, scroll, pinch, and rotate the canvas to explore the 3D scene.</p>
-        </div> */}
-      {/* <div className='relative my-12 h-48 w-full py-6 sm:w-1/2 md:mb-40'>
-          <View orbit className='relative h-full  sm:h-48 sm:w-full'>
+      <div className='relative min-h-screen'>
+        <div className='absolute inset-0'>
+          <View className='h-screen w-full'>
             <Suspense fallback={null}>
-              <Paradox scale={2} position={[0, -1.6, 0]} rotation={[0.0, -0.3, 0]} />
-              <Common color={'black'} />
-            </Suspense>
-          </View>
-        </div> */}
-      {/* second row */}
-      {/* <div className='relative my-12 h-48 w-full py-6 sm:w-1/2 md:mb-40'>
-          <View orbit className='relative h-full animate-bounce sm:h-48 sm:w-full'>
-            <Suspense fallback={null}>
-              <Duck route='/blob' scale={2} position={[0, -1.6, 0]} />
+              <Logo route='/blob' scale={0.6} position={[0, 0, 0]} />
               <Common color={'lightblue'} />
             </Suspense>
           </View>
-        </div> */}
-      {/* <div className='w-full p-6 sm:w-1/2'>
-          <h2 className='mb-3 text-3xl font-bold leading-none text-gray-800'>Dom and 3D are synchronized</h2>
-          <p className='mb-8 text-gray-600'>
-            3D Divs are renderer through the View component. It uses gl.scissor to cut the viewport into segments. You
-            tie a view to a tracking div which then controls the position and bounds of the viewport. This allows you to
-            have multiple views with a single, performant canvas. These views will follow their tracking elements,
-            scroll along, resize, etc.
-          </p>
-        </div> */}
-      {/* </div> */}
+        </div>
+        <div className='relative z-10 mx-auto flex w-full flex-col flex-wrap items-center md:flex-row'>
+          <div className='hero min-h-[70vh]'>
+            <div className='hero-content text-center'>
+              <div className='max-w-3xl'>
+                <div className='mt-5 px-5'>
+                  <h1 className=' text-left text-3xl font-semibold drop-shadow-lg md:text-5xl'>
+                    Hello, I am Alejandro Oviedo
+                  </h1>
+                  <h2 className='text-left font-semibold drop-shadow-lg'>
+                    I am a front-end developer that enjoys making cool things happen on screens.
+                    <br />
+                    Feel free to find out more
+                    <span>
+                      <Link href='/about' className='link-hover border-none'>
+                        about me,
+                      </Link>
+                    </span>
+                    or check out my
+                    <span>
+                      <Link href='/skills' className='link-hover border-none'>
+                        tech skills,
+                      </Link>
+                    </span>
+                    <span>
+                      <Link href='/chatbot' className='link-hover border-none'>
+                        Jerky Boy Bot,
+                      </Link>
+                    </span>
+                    <span>
+                      <Link href='/animations' className='link-hover border-none'>
+                        animations,
+                      </Link>
+                    </span>
+                    <span> and </span>
+                    <span>
+                      <Link href='https://github.com/alexoviedo999' className='link-hover border-none'>
+                        github
+                      </Link>
+                    </span>
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
