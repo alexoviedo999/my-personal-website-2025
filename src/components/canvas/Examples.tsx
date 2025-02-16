@@ -1,11 +1,17 @@
 'use client'
 
 import { useGLTF } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, ThreeElements } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useMemo, useRef, useState } from 'react'
 import { Line, useCursor, MeshDistortMaterial } from '@react-three/drei'
 import { useRouter } from 'next/navigation'
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements extends ThreeElements {}
+  }
+}
 
 export const Blob = ({ route = '/', ...props }) => {
   const router = useRouter()
@@ -16,7 +22,8 @@ export const Blob = ({ route = '/', ...props }) => {
       onClick={() => router.push(route)}
       onPointerOver={() => hover(true)}
       onPointerOut={() => hover(false)}
-      {...props}>
+      {...props}
+    >
       <sphereGeometry args={[1, 64, 64]} />
       <MeshDistortMaterial roughness={0.5} color={hovered ? 'hotpink' : '#1fb2f5'} />
     </mesh>
@@ -63,6 +70,12 @@ export function Duck(props) {
 }
 export function Dog(props) {
   const { scene } = useGLTF('/dog.glb')
+
+  return <primitive object={scene} {...props} />
+}
+
+export function Paradox(props) {
+  const { scene } = useGLTF('/paradox.glb')
 
   return <primitive object={scene} {...props} />
 }
