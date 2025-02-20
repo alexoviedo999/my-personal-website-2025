@@ -31,7 +31,7 @@ export const NoiseGrid = ({}) => {
   }
 
   useFrame((_, t) => {
-    elapsedTime += t * 0.25
+    elapsedTime += t * 0.2
     const geo = ref.current.geometry
     const verts = geo.attributes.position
     let ns
@@ -42,16 +42,16 @@ export const NoiseGrid = ({}) => {
     const scaledMouseY = mouse.y * viewport.height
 
     // Update mouse position with smooth interpolation
-    mouse.x += (pointer.x - mouse.x) * 0.15
-    mouse.y += (pointer.y - mouse.y) * 0.15
+    mouse.x += (pointer.x - mouse.x) * 0.02
+    mouse.y += (pointer.y - mouse.y) * 0.02
 
     for (let i = 0; i < coords.count; i += 1) {
       p.fromBufferAttribute(verts, i)
       // Add mouse influence to noise
       const distance = Math.sqrt(Math.pow(p.x - scaledMouseX, 2) + Math.pow(p.y - scaledMouseY, 2))
-      const influence = Math.max(0, 1 - distance / 5) // Adjust the divisor to change influence radius
+      const influence = Math.max(0, 1 - distance / 3) // Adjust the divisor to change influence radius
 
-      ns = Noise.noise(p.x * nScale + mouse.x * 3, p.y * nScale + mouse.y * 3, elapsedTime) * (1 + influence)
+      ns = Noise.noise(p.x * nScale + mouse.x * 2, p.y * nScale + mouse.y * 2, elapsedTime) * (1 + influence)
 
       p.z = ns * zPosScale
       verts.setXYZ(i, p.x, p.y, p.z)

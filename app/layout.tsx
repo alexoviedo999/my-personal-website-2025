@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
       <head />
       <body>
         {/* To avoid FOUT with styled-components wrap Layout with StyledComponentsRegistry https://beta.nextjs.org/docs/styling/css-in-js#styled-components */}
-        <div className='min-h-full bg-black'>
+        <div className='bg-black data-[aria-hidden=true]:min-h-full'>
           <div className='navbar fixed top-0 z-50 w-full border-2 border-base-100/50 bg-base-100'>
             <div className='navbar-start'>
               <div className='dropdown'>

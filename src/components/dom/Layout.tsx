@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
         overflow: 'auto',
         touchAction: 'auto',
       }}
-      className='min-h-full bg-black'
+      className='data-[aria-hidden=true]: min-h-full bg-black'
     >
       {/* Main content */}
       <div className='relative z-10 min-h-screen pt-16'>{children}</div>
