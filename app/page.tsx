@@ -26,7 +26,7 @@ export default function Page() {
             </Suspense>
           </ViewLoader>
         </div>
-        <div className='relative z-10 mx-auto flex w-full flex-col flex-wrap items-center md:flex-row'>
+        <div className='pointer-events-none relative z-10 mx-auto flex w-full flex-col flex-wrap items-center md:flex-row'>
           <div className='hero min-h-[70vh]'>
             <div className='hero-content text-center'>
               <div className='max-w-3xl'>
@@ -39,29 +39,29 @@ export default function Page() {
                     <br />
                     Feel free to find out more
                     <span>
-                      <Link href='/about' className='link-hover border-none'>
-                        about me,
+                      <Link href='/about' className='link-hover pointer-events-auto border-none font-black'>
+                        &nbsp;about me,
                       </Link>
                     </span>
-                    or check out my
+                    &nbsp;or check out my
                     <span>
-                      <Link href='/skills' className='link-hover border-none'>
-                        tech skills,
-                      </Link>
-                    </span>
-                    <span>
-                      <Link href='/chatbot' className='link-hover border-none'>
-                        Jerky Boy Bot,
+                      <Link href='/skills' className='link-hover border-none font-black'>
+                        &nbsp;tech skills,
                       </Link>
                     </span>
                     <span>
-                      <Link href='/animations' className='link-hover border-none'>
-                        animations,
+                      <Link href='/chatbot' className='link-hover border-none font-black'>
+                        &nbsp;Jerky Boy Bot,
+                      </Link>
+                    </span>
+                    <span>
+                      <Link href='/animations' className='link-hover border-none font-black'>
+                        &nbsp;animations,
                       </Link>
                     </span>
                     <span> and </span>
                     <span>
-                      <Link href='https://github.com/alexoviedo999' className='link-hover border-none'>
+                      <Link href='https://github.com/alexoviedo999' className='link-hover border-none font-black'>
                         github
                       </Link>
                     </span>
