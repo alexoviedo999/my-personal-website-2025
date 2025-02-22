@@ -23,6 +23,27 @@ const nextConfig = {
       // We're in the browser build, so we can safely exclude the sharp module
       config.externals.push('sharp')
     }
+
+    // Update SVG support to use both SVGR and URL loader
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: {
+            svgoConfig: {
+              plugins: [
+                {
+                  name: 'removeViewBox',
+                  active: false,
+                },
+              ],
+            },
+          },
+        },
+        'url-loader',
+      ],
+    })
     // audio support
     config.module.rules.push({
       test: /\.(ogg|mp3|wav|mpe?g)$/i,
