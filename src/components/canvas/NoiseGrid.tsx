@@ -13,12 +13,12 @@ type PointsRef = THREE.Points & {
 export const NoiseGrid = ({}) => {
   const ref = React.useRef<PointsRef>(null)
   const { viewport, pointer } = useThree()
-  const planeGeo = new THREE.PlaneGeometry(12, 10, 64, 64)
+  const planeGeo = new THREE.PlaneGeometry(6, 5, 64, 64)
   const coords = planeGeo.attributes.position
   let colors = []
   let col = new THREE.Color()
   const p = new THREE.Vector3()
-  const nScale = 0.7
+  const nScale = 0.5
   const zPosScale = 3.0
   const lowColor = new THREE.Color(0.0, 0.0, 0.5)
   const highColor = new THREE.Color(0.0, 0.1, 0.7)
@@ -70,7 +70,7 @@ export const NoiseGrid = ({}) => {
 
   const sprite = useLoader(THREE.TextureLoader, './circle.png')
   return (
-    <points ref={ref}>
+    <points ref={ref} rotation={[Math.PI / 9, Math.PI / 12, 0]}>
       <bufferGeometry>
         <bufferAttribute attach={'attributes-position'} count={coords.count} array={coords.array} itemSize={3} />
       </bufferGeometry>

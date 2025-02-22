@@ -27,7 +27,7 @@ export default function Page() {
           </ViewLoader>
         </div>
         <div className='pointer-events-none relative z-10 mx-auto flex w-full flex-col flex-wrap items-center md:flex-row'>
-          <div className='hero min-h-[70vh]'>
+          <div className='hero min-h-[80vh]'>
             <div className='hero-content text-center'>
               <div className='max-w-3xl'>
                 <div className='mt-5 px-5'>

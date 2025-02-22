@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+/* @layer base {
   * {
     box-sizing: border-box;
   }
@@ -14,6 +14,65 @@
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: auto;
   }
+} */
+
+@layer components {
+  .text-color {
+    @apply text-gray-50;
+  }
+
+  .text-color-link {
+    @apply text-gray-50 hover:text-gray-500;
+  }
+}
+
+a {
+  @apply text-blue-700;
+}
+
+a:hover {
+  @apply border-b-2 border-blue-700;
+}
+
+.content p {
+  @apply my-6;
+}
+
+.content ul {
+  @apply my-6;
+}
+
+.scene {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+}
+
+.canvas {
+  background: #000;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 50px hsl(var(--b1) / var(--tw-bg-opacity)) inset;
+  -webkit-text-fill-color: rgb(107 114 128);
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 50px hsl(var(--b1) / var(--tw-bg-opacity)) inset;
+  -webkit-text-fill-color: rgb(107 114 128);
+}
+
+.loader span {
+  animation-name: bounce;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+.loader span:nth-child(2) {
+  animation-delay: 50ms;
+}
+.loader span:nth-child(3) {
+  animation-delay: 150ms;
 }

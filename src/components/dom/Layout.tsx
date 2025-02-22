@@ -21,7 +21,7 @@ const Layout = ({ children }) => {
       className='data-[aria-hidden=true]: min-h-full bg-black'
     >
       {/* Main content */}
-      <div className='relative z-10 min-h-screen pt-16'>{children}</div>
+      <div className='relative z-10 min-h-screen'>{children}</div>
       <div className='fixed inset-0 z-0'>
         <Scene
           style={{
