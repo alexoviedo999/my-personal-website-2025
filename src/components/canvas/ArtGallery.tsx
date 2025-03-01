@@ -1,48 +1,22 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Group, Mesh, Vector3 } from 'three'
-import { useFrame } from '@react-three/fiber'
-import { Text, useGLTF, useHelper } from '@react-three/drei'
+import { extend, useFrame, useThree } from '@react-three/fiber'
+import {
+  Text,
+  useGLTF,
+  useHelper,
+  MeshPortalMaterial,
+  CameraControls,
+  useTexture,
+  RoundedBox,
+  Environment,
+} from '@react-three/drei'
 import { SpotLightHelper } from 'three'
+import { useRouter } from 'next/navigation'
+import * as THREE from 'three'
+import { easing, geometry } from 'maath'
 
-// Art frame component
-interface ArtFrameProps {
-  position: [number, number, number]
-  rotation: [number, number, number]
-  size?: [number, number, number]
-  color?: string
-}
-
-const ArtFrame = ({ position, rotation, size = [2, 3, 0.1], color = '#8B4513' }: ArtFrameProps) => {
-  const frameRef = useRef<Mesh>(null)
-  const frameThickness = 0.1
-  
-  return (
-    <group position={position} rotation={rotation}>
-      {/* Frame */}
-      <mesh ref={frameRef}>
-        <boxGeometry args={[size[0], size[1], size[2]]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-      
-      {/* Canvas (slightly in front of the frame) */}
-      <mesh position={[0, 0, size[2] / 2 + 0.01]}>
-        <planeGeometry args={[size[0] - frameThickness * 2, size[1] - frameThickness * 2]} />
-        <meshStandardMaterial color="#f5f5dc" />
-      </mesh>
-      
-      {/* Art title */}
-      <Text
-        position={[0, -size[1] / 2 - 0.2, 0.1]}
-        fontSize={0.15}
-        color="#333"
-        anchorX="center"
-        anchorY="top"
-      >
-        Untitled
-      </Text>
-    </group>
-  )
-}
+extend(geometry)
 
 // Wall component
 interface WallProps {
@@ -77,38 +51,6 @@ const Floor = ({ position = [0, -2, 0], size = [20, 0.2, 20], color = '#8B4513' 
   )
 }
 
-// Door component
-interface DoorProps {
-  position: [number, number, number]
-  rotation: [number, number, number]
-  size?: [number, number, number]
-  color?: string
-}
-
-const Door = ({ position, rotation, size = [1.5, 3, 0.1], color = '#4d2600' }: DoorProps) => {
-  return (
-    <group position={position} rotation={rotation}>
-      {/* Door frame */}
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[size[0] + 0.2, size[1] + 0.2, size[2]]} />
-        <meshStandardMaterial color="#5c5c5c" />
-      </mesh>
-      
-      {/* Door */}
-      <mesh position={[0, 0, 0.05]}>
-        <boxGeometry args={size} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-      
-      {/* Door knob */}
-      <mesh position={[size[0]/3, 0, size[2] + 0.05]}>
-        <sphereGeometry args={[0.1, 16, 16]} />
-        <meshStandardMaterial color="#c0c0c0" metalness={0.8} roughness={0.2} />
-      </mesh>
-    </group>
-  )
-}
-
 // Spotlight component
 interface SpotLightProps {
   position: [number, number, number]
@@ -121,7 +63,7 @@ const SpotLight = ({ position, target, color = '#ffffff', intensity = 5 }: SpotL
   const spotLightRef = useRef(null)
   // Uncomment for debugging
   // useHelper(spotLightRef, SpotLightHelper, 'white')
-  
+
   return (
     <spotLight
       ref={spotLightRef}
@@ -136,9 +78,106 @@ const SpotLight = ({ position, target, color = '#ffffff', intensity = 5 }: SpotL
   )
 }
 
+// Frame component with MeshPortalMaterial
+interface FrameProps {
+  position: [number, number, number]
+  rotation: [number, number, number]
+  name: string
+  color?: string
+  active: string | null
+  setActive: (name: string | null) => void
+  hovered: string | null
+  setHovered: (name: string | null) => void
+}
+
+const Frame = ({ position, rotation, name, color = '#ffffff', active, setActive, hovered, setHovered }: FrameProps) => {
+  const router = useRouter()
+  const portalMaterial = useRef<any>()
+  const map = useTexture('/img/Sergi-Delgado-Op-Art.jpg')
+  const meshRef = useRef<THREE.Mesh>(null)
+
+  // Handle portal animation
+  useFrame((_state, delta) => {
+    const worldOpen = active === name
+    if (portalMaterial.current) {
+      easing.damp(portalMaterial.current, 'blend', worldOpen ? 1 : 0, 0.2, delta)
+    }
+  })
+
+  // Handle navigation to /wave route when portal is fully open
+  useFrame((_state) => {
+    if (active === name && portalMaterial.current && portalMaterial.current.blend >= 0.9) {
+      // Small delay before navigation to ensure smooth transition
+      setTimeout(() => {
+        setActive(null)
+        router.push('/wave')
+      }, 300)
+    }
+  })
+
+  return (
+    <group position={position} rotation={rotation}>
+      <Text fontSize={0.2} position={[0, -1.3, 0.051]} anchorY='bottom'>
+        {name}
+        <meshBasicMaterial color={color} toneMapped={false} />
+      </Text>
+      <RoundedBox
+        name={name}
+        args={[2, 3, 0.1]}
+        onDoubleClick={() => setActive(active === name ? null : name)}
+        onPointerEnter={() => setHovered(name)}
+        onPointerLeave={() => setHovered(null)}
+      >
+        <MeshPortalMaterial ref={portalMaterial} side={THREE.DoubleSide}>
+          {/* Remove the blue background color */}
+          <ambientLight intensity={1.5} />
+          <spotLight position={[0, 5, 10]} angle={0.3} penumbra={1} intensity={2} castShadow />
+
+          {/* Scene inside the portal - Fill the entire portal with the image */}
+          <mesh ref={meshRef} position={[0, 0, -2]}>
+            <planeGeometry args={[6, 6]} /> {/* Increased size to ensure full coverage */}
+            <meshStandardMaterial map={map} side={THREE.DoubleSide} />
+          </mesh>
+        </MeshPortalMaterial>
+      </RoundedBox>
+    </group>
+  )
+}
+
+// Rig component to control camera
+const Rig = ({ active }: { active: string | null }) => {
+  const { camera } = useThree()
+  const controlsRef = useRef<CameraControls>(null)
+  const scene = useThree((state) => state.scene)
+
+  useFrame((_state, delta) => {
+    if (active) {
+      const targetPosition = new THREE.Vector3()
+      const targetObject = scene.getObjectByName(active)
+
+      if (targetObject) {
+        targetObject.getWorldPosition(targetPosition)
+
+        if (targetPosition.length() > 0) {
+          easing.damp3(camera.position, [targetPosition.x, targetPosition.y, targetPosition.z - 5], 0.4, delta)
+          camera.lookAt(targetPosition)
+        }
+      }
+    } else {
+      // Reset camera position when no portal is active
+      easing.damp3(camera.position, [0, 0, 10], 0.4, delta)
+      camera.lookAt(0, 0, 0)
+    }
+  })
+
+  return <CameraControls ref={controlsRef} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 6} enabled={!active} />
+}
+
 export const ArtGallery = () => {
   const galleryRef = useRef<Group>(null)
-  
+  const [active, setActive] = useState<string | null>(null)
+  const [hovered, setHovered] = useState<string | null>(null)
+
   useFrame(({ clock }) => {
     if (galleryRef.current) {
       // Subtle ambient movement
@@ -146,84 +185,73 @@ export const ArtGallery = () => {
     }
   })
 
-  // Gallery dimensions
-  const galleryWidth = 12
-  const galleryLength = 20
-  const hallwayLength = 8
-  const hallwayWidth = 3
-  const wallHeight = 6  // Increased by 50% from 4 to 6
+  const gallerySize = 16
+  const wallHeight = 8
   const wallThickness = 0.2
 
   return (
     <group ref={galleryRef}>
-      {/* Main Gallery Room - Rectangular */}
-      {/* Long walls (sides) */}
-      <Wall position={[-galleryWidth/2, 0, 0]} rotation={[0, Math.PI/2, 0]} size={[galleryLength, wallHeight, wallThickness]} />
-      <Wall position={[galleryWidth/2, 0, 0]} rotation={[0, Math.PI/2, 0]} size={[galleryLength, wallHeight, wallThickness]} />
-      
-      {/* Short walls (ends) - with openings for hallways */}
-      {/* North wall (with opening for hallway) - now flush with long walls */}
-      <Wall position={[-galleryWidth/2 + (galleryWidth/2 - hallwayWidth/2)/2, 0, -galleryLength/2]} rotation={[0, 0, 0]} size={[galleryWidth/2 - hallwayWidth/2, wallHeight, wallThickness]} />
-      <Wall position={[galleryWidth/2 - (galleryWidth/2 - hallwayWidth/2)/2, 0, -galleryLength/2]} rotation={[0, 0, 0]} size={[galleryWidth/2 - hallwayWidth/2, wallHeight, wallThickness]} />
-      
-      {/* South wall (with opening for hallway) - now flush with long walls */}
-      <Wall position={[-galleryWidth/2 + (galleryWidth/2 - hallwayWidth/2)/2, 0, galleryLength/2]} rotation={[0, 0, 0]} size={[galleryWidth/2 - hallwayWidth/2, wallHeight, wallThickness]} />
-      <Wall position={[galleryWidth/2 - (galleryWidth/2 - hallwayWidth/2)/2, 0, galleryLength/2]} rotation={[0, 0, 0]} size={[galleryWidth/2 - hallwayWidth/2, wallHeight, wallThickness]} />
-      
-      {/* North Hallway */}
-      <Wall position={[-hallwayWidth/2 - 0.1, 0, -galleryLength/2 - hallwayLength/2]} rotation={[0, Math.PI/2, 0]} size={[hallwayLength, wallHeight, wallThickness]} />
-      <Wall position={[hallwayWidth/2 + 0.1, 0, -galleryLength/2 - hallwayLength/2]} rotation={[0, Math.PI/2, 0]} size={[hallwayLength, wallHeight, wallThickness]} />
-      <Wall position={[0, 0, -galleryLength/2 - hallwayLength]} rotation={[0, 0, 0]} size={[hallwayWidth + 0.2, wallHeight, wallThickness]} />
-      
-      {/* South Hallway */}
-      <Wall position={[-hallwayWidth/2 - 0.1, 0, galleryLength/2 + hallwayLength/2]} rotation={[0, Math.PI/2, 0]} size={[hallwayLength, wallHeight, wallThickness]} />
-      <Wall position={[hallwayWidth/2 + 0.1, 0, galleryLength/2 + hallwayLength/2]} rotation={[0, Math.PI/2, 0]} size={[hallwayLength, wallHeight, wallThickness]} />
-      <Wall position={[0, 0, galleryLength/2 + hallwayLength]} rotation={[0, 0, 0]} size={[hallwayWidth + 0.2, wallHeight, wallThickness]} />
-      
-      {/* Doors at the end of hallways */}
-      <Door position={[0, -0.5, -galleryLength/2 - hallwayLength + 0.11]} rotation={[0, 0, 0]} />
-      <Door position={[0, -0.5, galleryLength/2 + hallwayLength - 0.11]} rotation={[0, Math.PI, 0]} />
-      
-      {/* Floor for main gallery and hallways */}
-      <Floor position={[0, -2, 0]} size={[galleryWidth, 0.2, galleryLength]} />
-      <Floor position={[0, -2, -galleryLength/2 - hallwayLength/2]} size={[hallwayWidth, 0.2, hallwayLength]} />
-      <Floor position={[0, -2, galleryLength/2 + hallwayLength/2]} size={[hallwayWidth, 0.2, hallwayLength]} />
-      
-      {/* Art pieces on long walls */}
-      {/* West wall */}
-      <ArtFrame position={[-galleryWidth/2 + 0.11, 0, -7]} rotation={[0, Math.PI/2, 0]} size={[2, 3, 0.1]} color="#8B4513" />
-      <ArtFrame position={[-galleryWidth/2 + 0.11, 0, -3]} rotation={[0, Math.PI/2, 0]} size={[1.5, 2, 0.1]} color="#5F4A3C" />
-      <ArtFrame position={[-galleryWidth/2 + 0.11, 0, 0]} rotation={[0, Math.PI/2, 0]} size={[2, 3, 0.1]} color="#8B4513" />
-      <ArtFrame position={[-galleryWidth/2 + 0.11, 0, 3]} rotation={[0, Math.PI/2, 0]} size={[1.5, 2, 0.1]} color="#5F4A3C" />
-      <ArtFrame position={[-galleryWidth/2 + 0.11, 0, 7]} rotation={[0, Math.PI/2, 0]} size={[2, 3, 0.1]} color="#8B4513" />
-      
-      {/* East wall */}
-      <ArtFrame position={[galleryWidth/2 - 0.11, 0, -7]} rotation={[0, -Math.PI/2, 0]} size={[2, 3, 0.1]} color="#8B4513" />
-      <ArtFrame position={[galleryWidth/2 - 0.11, 0, -3]} rotation={[0, -Math.PI/2, 0]} size={[1.5, 2, 0.1]} color="#5F4A3C" />
-      <ArtFrame position={[galleryWidth/2 - 0.11, 0, 0]} rotation={[0, -Math.PI/2, 0]} size={[2, 3, 0.1]} color="#8B4513" />
-      <ArtFrame position={[galleryWidth/2 - 0.11, 0, 3]} rotation={[0, -Math.PI/2, 0]} size={[1.5, 2, 0.1]} color="#5F4A3C" />
-      <ArtFrame position={[galleryWidth/2 - 0.11, 0, 7]} rotation={[0, -Math.PI/2, 0]} size={[2, 3, 0.1]} color="#8B4513" />
-      
-      {/* North wall sections */}
-      <ArtFrame position={[-galleryWidth/3, 0, -galleryLength/2 + 0.11]} rotation={[0, 0, 0]} size={[1.5, 2, 0.1]} color="#5F4A3C" />
-      <ArtFrame position={[galleryWidth/3, 0, -galleryLength/2 + 0.11]} rotation={[0, 0, 0]} size={[1.5, 2, 0.1]} color="#5F4A3C" />
-      
-      {/* South wall sections */}
-      <ArtFrame position={[-galleryWidth/3, 0, galleryLength/2 - 0.11]} rotation={[0, Math.PI, 0]} size={[1.5, 2, 0.1]} color="#5F4A3C" />
-      <ArtFrame position={[galleryWidth/3, 0, galleryLength/2 - 0.11]} rotation={[0, Math.PI, 0]} size={[1.5, 2, 0.1]} color="#5F4A3C" />
-      
+      {/* North Wall (solid) */}
+      <Wall position={[0, 0, -gallerySize / 2]} rotation={[0, 0, 0]} size={[gallerySize, wallHeight, wallThickness]} />
+
+      {/* East Wall (solid) */}
+      <Wall
+        position={[gallerySize / 2, 0, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+        size={[gallerySize, wallHeight, wallThickness]}
+      />
+
+      {/* South Wall (solid) */}
+      <Wall position={[0, 0, gallerySize / 2]} rotation={[0, 0, 0]} size={[gallerySize, wallHeight, wallThickness]} />
+
+      {/* West Wall (solid) */}
+      <Wall
+        position={[-gallerySize / 2, 0, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+        size={[gallerySize, wallHeight, wallThickness]}
+      />
+
+      {/* Floor */}
+      <Floor position={[0, -2, 0]} size={[gallerySize, 0.2, gallerySize]} />
+
+      {/* Portal Frame on North Wall */}
+      <Frame
+        position={[0, 0, -gallerySize / 2 + wallThickness / 2 + 0.1]}
+        rotation={[0, 0, 0]}
+        name='Wave Portal'
+        color='#4285f4'
+        active={active}
+        setActive={setActive}
+        hovered={hovered}
+        setHovered={setHovered}
+      />
+
       {/* Lighting */}
-      <ambientLight intensity={0.2} />
-      
-      {/* Main gallery lights */}
-      <SpotLight position={[0, 4, -galleryLength/4]} target={[-galleryWidth/2 + 0.11, 0, -7]} />
-      <SpotLight position={[0, 4, galleryLength/4]} target={[-galleryWidth/2 + 0.11, 0, 7]} />
-      <SpotLight position={[0, 4, -galleryLength/4]} target={[galleryWidth/2 - 0.11, 0, -7]} />
-      <SpotLight position={[0, 4, galleryLength/4]} target={[galleryWidth/2 - 0.11, 0, 7]} />
-      
-      {/* Hallway lights */}
-      <SpotLight position={[0, 4, -galleryLength/2 - hallwayLength/2]} target={[0, -0.5, -galleryLength/2 - hallwayLength + 0.11]} intensity={3} />
-      <SpotLight position={[0, 4, galleryLength/2 + hallwayLength/2]} target={[0, -0.5, galleryLength/2 + hallwayLength - 0.11]} intensity={3} />
+      <ambientLight intensity={0.5} />
+
+      {/* Center light */}
+      <spotLight position={[0, 5, 0]} intensity={5} angle={Math.PI / 4} penumbra={0.5} castShadow />
+
+      {/* Corner lights */}
+      <SpotLight
+        position={[-gallerySize / 3, 4, -gallerySize / 3]}
+        target={[-gallerySize / 2 + 0.11, 0, -gallerySize / 4]}
+      />
+      <SpotLight
+        position={[gallerySize / 3, 4, -gallerySize / 3]}
+        target={[gallerySize / 2 - 0.11, 0, -gallerySize / 4]}
+      />
+      <SpotLight
+        position={[-gallerySize / 3, 4, gallerySize / 3]}
+        target={[-gallerySize / 2 + 0.11, 0, gallerySize / 4]}
+      />
+      <SpotLight
+        position={[gallerySize / 3, 4, gallerySize / 3]}
+        target={[gallerySize / 2 - 0.11, 0, gallerySize / 4]}
+      />
+
+      {/* Camera Rig */}
+      <Rig active={active} />
     </group>
   )
 }
