@@ -10,11 +10,28 @@ type PointsRef = THREE.Points & {
   geometry: THREE.BufferGeometry
 }
 
-export const NoiseGrid = ({}) => {
+type NoiseGridProps = {
+  position?: [number, number, number]
+  scale?: number
+  rotation?: [number, number, number]
+  radius?: number
+  spherical?: boolean
+}
+
+export const NoiseGrid = ({ 
+  position = [0, 0, 0], 
+  scale = 1, 
+  rotation = [Math.PI / 9, Math.PI / 12, 0],
+  radius = 5,
+  spherical = false
+}: NoiseGridProps = {}) => {
   const ref = React.useRef<PointsRef>(null)
   const { viewport, pointer } = useThree()
-  const planeGeo = new THREE.PlaneGeometry(6, 5, 64, 64)
-  const coords = planeGeo.attributes.position
+  // Choose between plane or sphere geometry based on the spherical prop
+  const geometry = spherical 
+    ? new THREE.SphereGeometry(radius, 64, 64) 
+    : new THREE.PlaneGeometry(6, 5, 64, 64)
+  const coords = geometry.attributes.position
   let colors = []
   let col = new THREE.Color()
   const p = new THREE.Vector3()
@@ -70,7 +87,7 @@ export const NoiseGrid = ({}) => {
 
   const sprite = useLoader(THREE.TextureLoader, './circle.png')
   return (
-    <points ref={ref} rotation={[Math.PI / 9, Math.PI / 12, 0]}>
+    <points ref={ref} position={position} scale={scale} rotation={rotation}>
       <bufferGeometry>
         <bufferAttribute attach={'attributes-position'} count={coords.count} array={coords.array} itemSize={3} />
       </bufferGeometry>

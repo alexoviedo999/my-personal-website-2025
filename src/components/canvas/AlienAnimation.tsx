@@ -4,6 +4,7 @@ import { CameraControls, useCursor } from '@react-three/drei'
 import { Macaroni } from '../../../public/models/macaroni/Macaroni'
 import Portal from './Portal'
 import Skybox from './Skybox'
+import { NoiseGrid } from './NoiseGrid'
 import { useEffect, useRef, useState } from 'react'
 import { useThree } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -29,6 +30,7 @@ export default function AlienAnimation() {
     <>
       <Skybox texture='textures/red-sky-1.jpg'>
         <CameraControls ref={controlRef} />
+        <NoiseGrid position={[0, 0, 0]} radius={5.2} spherical={true} />
         <Portal
           name='Macaroni'
           color='#ffffff'
