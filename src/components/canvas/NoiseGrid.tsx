@@ -19,7 +19,7 @@ type NoiseGridProps = {
 }
 
 export const NoiseGrid = ({ 
-  position = [0, 0, 0], 
+  position = [0, 0, -10], // Position far behind other elements
   scale = 1, 
   rotation = [Math.PI / 9, Math.PI / 12, 0],
   radius = 5,
@@ -87,11 +87,18 @@ export const NoiseGrid = ({
 
   const sprite = useLoader(THREE.TextureLoader, './circle.png')
   return (
-    <points ref={ref} position={position} scale={scale} rotation={rotation}>
+    <points ref={ref} position={position} scale={scale} rotation={rotation} renderOrder={-1000}>
       <bufferGeometry>
         <bufferAttribute attach={'attributes-position'} count={coords.count} array={coords.array} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial alphaTest={0.5} vertexColors size={0.1} map={sprite} />
+      <pointsMaterial 
+        alphaTest={0.5} 
+        vertexColors 
+        size={0.1} 
+        map={sprite} 
+        depthWrite={false} // Prevents the grid from affecting the depth buffer
+        transparent={true} // Enable transparency
+      />
     </points>
   )
 }

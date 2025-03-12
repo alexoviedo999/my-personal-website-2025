@@ -18,8 +18,11 @@ export const Common: React.FC<CommonProps> = ({ color, camera }) => {
       {color && <color attach='background' args={[color]} />}
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
-      {camera && <PerspectiveCamera makeDefault {...camera} />}
-      <PerspectiveCamera makeDefault fov={40} position={[0, 0, 6]} />
+      {camera ? (
+        <PerspectiveCamera makeDefault {...camera} />
+      ) : (
+        <PerspectiveCamera makeDefault fov={40} position={[0, 0, 6]} />
+      )}
     </Suspense>
   )
 }

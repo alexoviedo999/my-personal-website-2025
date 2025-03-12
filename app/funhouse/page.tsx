@@ -20,10 +20,11 @@ export default function Page() {
             <Suspense fallback={null}>
               <directionalLight position={[15, 10, 5]} intensity={1} />
               <ArtGallery />
-              <OrbitControls 
-                enableZoom={true} 
-                enablePan={true} 
-                minDistance={5} 
+
+              <OrbitControls
+                enableZoom={true}
+                enablePan={true}
+                minDistance={5}
                 maxDistance={30}
                 maxPolarAngle={Math.PI / 2 - 0.1} // Prevent going below the floor
               />

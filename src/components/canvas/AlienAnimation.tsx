@@ -28,7 +28,7 @@ export default function AlienAnimation() {
 
   return (
     <>
-      <Skybox texture='textures/red-sky-1.jpg'>
+      <Skybox texture='/textures/alex_grey_1.hdr' hdr={true} background={true}>
         <CameraControls ref={controlRef} />
         <NoiseGrid position={[0, 0, 0]} radius={5.2} spherical={true} />
         <Portal

@@ -23,6 +23,7 @@ export default function Portal({
   setActive?: (active: string) => void
   hovered?: string
   setHovered?: (hovered: string) => void
+  [key: string]: any // Allow additional props like position
 }) {
   // Use any type for now to avoid TypeScript errors
   const portalMaterial = useRef<any>(null)
