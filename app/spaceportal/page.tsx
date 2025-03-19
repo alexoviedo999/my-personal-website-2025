@@ -7,6 +7,7 @@ import Skybox from '@/components/canvas/Skybox'
 import { Macaroni } from 'public/models/macaroni/Macaroni'
 import { useState, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { OpWaveContent } from '../wave/page'
 
 const Portal = dynamic(() => import('@/components/canvas/Portal').then((mod) => mod.default), { ssr: false })
 
@@ -49,6 +50,17 @@ function Scene() {
             position={[0, 2.0, 1.5]}
           >
             <Macaroni scale={0.5} position={[0, -1, 0]} hovered={hovered === 'Macaroni'} />
+          </Portal>
+          <Portal
+            name='Wave'
+            color='#ffffff'
+            active={active}
+            setActive={setActive}
+            hovered={hovered}
+            setHovered={setHovered}
+            position={[3, 2.0, 1.5]}
+          >
+            <OpWaveContent />
           </Portal>
 
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>

@@ -35,7 +35,7 @@ export function Macaroni({ hovered, ...props }) {
   
   return (
     <group ref={group} {...props} dispose={null}>
-      <Skybox texture='textures/op_art_tree.jpg'>
+      <Skybox texture='textures/op_art_tree.hdr' hdr={true} background={true}>
         <NoiseGrid position={[0, 0, 0]} radius={1.5} spherical={true} />
       </Skybox>
       <group name='Sketchfab_Scene' scale={0.2}>
