@@ -10,7 +10,6 @@ Title: Psychedelic Macaroni
 import React, { useEffect } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
 import Skybox from '../../../src/components/canvas/Skybox'
-import { NoiseGrid } from '../../../src/components/canvas/NoiseGrid'
 
 export function Macaroni({ hovered, ...props }) {
   const group = React.useRef()
@@ -36,8 +35,6 @@ export function Macaroni({ hovered, ...props }) {
   return (
     <group ref={group} {...props} dispose={null}>
       <Skybox texture='textures/op_art_tree.hdr' hdr={true} background={true}>
-        <NoiseGrid position={[0, 0, 0]} radius={1.5} spherical={true} />
-      </Skybox>
       <group name='Sketchfab_Scene' scale={0.2}>
         <group name='Sketchfab_model' rotation={[-Math.PI / 2, 0, 0]}>
           <group name='root'>
@@ -430,6 +427,7 @@ export function Macaroni({ hovered, ...props }) {
           </group>
         </group>
       </group>
+      </Skybox>
     </group>
   )
 }

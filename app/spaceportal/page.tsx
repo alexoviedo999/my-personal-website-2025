@@ -4,10 +4,11 @@ import { ViewLoader } from '@/components/canvas/ViewLoader'
 import { Environment, MeshReflectorMaterial, OrbitControls, useCursor, PerspectiveCamera } from '@react-three/drei'
 import dynamic from 'next/dynamic'
 import Skybox from '@/components/canvas/Skybox'
-import { Macaroni } from 'public/models/macaroni/Macaroni'
 import { useState, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { OpWaveContent } from '../wave/page'
+import { OpWaveEye } from '@/components/canvas/OpWaveEye'
+import { Triangle } from '@/components/canvas/Triangle'
+import { Timetunnel } from '@/components/canvas/Timetunnel'
 
 const Portal = dynamic(() => import('@/components/canvas/Portal').then((mod) => mod.default), { ssr: false })
 
@@ -23,7 +24,7 @@ function Scene() {
   // Add rotation animation
   useFrame((state, delta) => {
     if (rotatingGroup.current) {
-      rotatingGroup.current.rotation.y += delta * 0.05
+      rotatingGroup.current.rotation.y += delta * 0.03
     }
   })
 
@@ -34,22 +35,22 @@ function Scene() {
         <fog attach='fog' args={['#191920', 0, 15]} />
 
         {/* Add ambient and point light outside the rotating group */}
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={3} />
         <pointLight position={[10, 10, 10]} />
 
         <group ref={rotatingGroup}>
-          <PerspectiveCamera makeDefault position={[0, 4.0, 6.5]} fov={90} />
+          <PerspectiveCamera makeDefault position={[0, 2.0, 6.5]} fov={90} />
 
           <Portal
-            name='Macaroni'
+            name='Timetunnel'
             color='#ffffff'
             active={active}
             setActive={setActive}
             hovered={hovered}
             setHovered={setHovered}
-            position={[0, 2.0, 1.5]}
+            position={[-3, 2.0, 1.5]}
           >
-            <Macaroni scale={0.5} position={[0, -1, 0]} hovered={hovered === 'Macaroni'} />
+            <Timetunnel scale={1} position={[0, -10, -30]} hovered={hovered === 'Macaroni'} />
           </Portal>
           <Portal
             name='Wave'
@@ -58,25 +59,36 @@ function Scene() {
             setActive={setActive}
             hovered={hovered}
             setHovered={setHovered}
+            position={[0, 2.0, 1.5]}
+          >
+            <OpWaveEye />
+          </Portal>
+          <Portal
+            name='Triangle'
+            color='#ffffff'
+            active={active}
+            setActive={setActive}
+            hovered={hovered}
+            setHovered={setHovered}
             position={[3, 2.0, 1.5]}
           >
-            <OpWaveContent />
+            <Triangle />
           </Portal>
 
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
             <planeGeometry args={[20, 15]} />
             <MeshReflectorMaterial
-              blur={[100, 50]}
+              blur={[500, 500]}
               resolution={2048}
-              mixBlur={0.01}
-              mixStrength={90}
+              mixBlur={0.1}
+              mixStrength={40}
               roughness={1}
-              depthScale={1.2}
+              depthScale={0.2}
               minDepthThreshold={0.4}
               maxDepthThreshold={1.4}
               color='#050505'
               metalness={0.5}
-              mirror={1}
+              mirror={0.1}
               transparent={false}
               opacity={1}
             />

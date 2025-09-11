@@ -1,36 +1,27 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-import { Canvas } from '@react-three/fiber'
+import { Suspense } from 'react'
+import { ViewLoader } from '@/components/canvas/ViewLoader'
+import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
+import { Common } from '@/components/canvas/View'
+import { OpWaveEye } from '@/components/canvas/OpWaveEye'
 
-// Import WaveImage component dynamically to avoid SSR issues
-const WaveImage = dynamic(() => import('@/components/canvas/WaveImage').then((mod) => mod.WaveImage), { ssr: false })
-
-// Component version without Canvas or hooks (for use inside other Canvas components)
-export function OpWaveContent() {
+export default function Page() {
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <WaveImage
-        imageUrl='/img/Sergi-Delgado-Op-Art.jpg'
-        width={3}
-        height={2}
-        amplitude={0.1}
-        frequency={3}
-        speed={1}
-        pulseSpeed={0.3}
-      />
+      <div className='relative min-h-screen'>
+        <div className='absolute inset-0'>
+          <ViewLoader className='h-screen w-full'>
+            <Suspense fallback={null}>
+              <directionalLight position={[15, 10, 5]} intensity={2} />
+              <OpWaveEye />
+              <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
+              <PerspectiveCamera makeDefault position={[0, 10, 0]} fov={60} />
+              <Common color={undefined} />
+            </Suspense>
+          </ViewLoader>
+        </div>
+      </div>
     </>
-  )
-}
-
-// Standalone page version with Canvas - this is the default export
-export default function WavePage() {
-  return (
-    <div className='h-screen w-full'>
-      <Canvas camera={{ position: [0, 0, 3] }}>
-        <OpWaveContent />
-      </Canvas>
-    </div>
   )
 }
