@@ -1,37 +1,30 @@
+// tsconfig.json
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["app/*", "src/*"]
-    },
-    "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
-    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "resolveJsonModule": true,
+    "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "target": "es5"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/**/*",
-    "public/models/macaroni/Macaroni.jsx"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/**/*", "app/**/*"],
   "exclude": ["node_modules"]
 }
