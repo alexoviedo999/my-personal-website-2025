@@ -7,15 +7,12 @@ import { Environment, MeshReflectorMaterial, OrbitControls, useCursor, Perspecti
 import * as THREE from 'three'
 import dynamic from 'next/dynamic'
 import Skybox from '@/components/canvas/Skybox'
-import { OpWaveEye } from '@/components/canvas/OpWaveEye'
-import { Triangle } from '@/components/canvas/Triangle'
-import { Timetunnel } from '@/components/canvas/Timetunnel'
 import { Picasso } from '@/components/canvas/Picasso'
 import { useCanvas } from '../CanvasContext'
 
 const Portal = dynamic(() => import('@/components/canvas/Portal').then((mod) => mod.default), { ssr: false })
 
-export const SpacePortalScene = () => {
+export const PicassoScene = () => {
   const {
     activePortal,
     setActivePortal,
@@ -49,54 +46,7 @@ export const SpacePortalScene = () => {
 
         <group ref={rotatingGroup}>
           <PerspectiveCamera makeDefault position={sceneConfig.camera.position} fov={sceneConfig.camera.fov} />
-
-          <Portal
-            name='Picasso'
-            color='#ffffff'
-            active={activePortal}
-            setActive={setActivePortal}
-            hovered={hoveredPortal}
-            setHovered={setHoveredPortal}
-            position={[-6, 2.0, 1.5]}
-          >
-            <Picasso active={activePortal === 'Picasso'} hovered={hoveredPortal === 'Picasso'} />
-          </Portal>
-
-          <Portal
-            name='Timetunnel'
-            color='#ffffff'
-            active={activePortal}
-            setActive={setActivePortal}
-            hovered={hoveredPortal}
-            setHovered={setHoveredPortal}
-            position={[-3, 2.0, 1.5]}
-          >
-            <Timetunnel scale={1} position={[0, -10, -30]} hovered={hoveredPortal === 'Timetunnel'} />
-          </Portal>
-
-          <Portal
-            name='Wave'
-            color='#ffffff'
-            active={activePortal}
-            setActive={setActivePortal}
-            hovered={hoveredPortal}
-            setHovered={setHoveredPortal}
-            position={[0, 2.0, 1.5]}
-          >
-            <OpWaveEye />
-          </Portal>
-
-          <Portal
-            name='Triangle'
-            color='#ffffff'
-            active={activePortal}
-            setActive={setActivePortal}
-            hovered={hoveredPortal}
-            setHovered={setHoveredPortal}
-            position={[3, 2.0, 1.5]}
-          >
-            <Triangle />
-          </Portal>
+          <Picasso active={activePortal === 'Picasso'} hovered={hoveredPortal === 'Picasso'} />
 
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
             <planeGeometry args={[20, 15]} />

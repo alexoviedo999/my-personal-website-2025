@@ -17,9 +17,13 @@ export function Timetunnel(props) {
   console.log('actions:  ', actions)
 
   useEffect(() => {
-    actions['Take 001'].reset().fadeIn(0.5).play()
+    if (actions['Take 001']) {
+      actions['Take 001'].reset().fadeIn(0.5).play()
+    }
     return () => {
-      actions['Take 001'].fadeOut(0.5)
+      if (actions && actions['Take 001']) {
+        actions['Take 001'].fadeOut(0.5)
+      }
     }
   }, [actions])
   return (
