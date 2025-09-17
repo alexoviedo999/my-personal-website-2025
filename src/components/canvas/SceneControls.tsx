@@ -1,8 +1,7 @@
-// src/components/canvas/SceneControls.tsx
 'use client'
 
 import { useCanvas } from './CanvasContext'
-import { SCENE_PRESETS } from './scenes'
+import { SCENE_PRESETS, ScenePreset } from './scenes'
 
 export const SceneControls = () => {
   console.log('SceneControls rendering') // Add this to debug

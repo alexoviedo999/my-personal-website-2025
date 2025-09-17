@@ -31,7 +31,7 @@ export default function Portal({
   useFrame((_state, delta) => {
     if (portalMaterial.current) {
       const portalOpen = active === name
-      easing.damp(portalMaterial.current, 'blend', portalOpen ? 1 : 0, 0.2, delta)
+      easing.damp(portalMaterial.current, 'blend', portalOpen ? 1 : 0, 0.5, delta)
     }
   })
 
