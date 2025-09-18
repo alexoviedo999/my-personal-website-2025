@@ -4,7 +4,6 @@ import { useFrame } from '@react-three/fiber'
 import { useRef, Suspense, useState, useEffect } from 'react'
 import { useGLTF, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import { useControls } from 'leva'
 
 // 2D Image Component with transition support
 function Picasso2D({ opacity = 1, scale = 1, visible = true, ...props }) {
