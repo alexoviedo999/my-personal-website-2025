@@ -5,26 +5,23 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { OrbitControls } from '@react-three/drei'
-import { ViewLoader } from '@/components/canvas/ViewLoader'
 
 const NoiseGrid = dynamic(() => import('@/components/canvas/NoiseGrid').then((mod) => mod.NoiseGrid), {
   ssr: false,
 })
 
-const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mod.Common), { ssr: false })
+const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
 export default function Page() {
   return (
     <>
       <div className='relative min-h-screen'>
         <div className='absolute inset-0'>
-          <ViewLoader className='h-screen w-full'>
+          <Scene className='h-screen w-full'>
             <Suspense fallback={null}>
               <NoiseGrid />
-              <OrbitControls />
-              <Common color={undefined} />
             </Suspense>
-          </ViewLoader>
+          </Scene>
         </div>
         <div className='pointer-events-none relative z-10 mx-auto flex w-full flex-col flex-wrap items-center md:flex-row'>
           <div className='hero min-h-[80vh]'>

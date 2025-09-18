@@ -7,6 +7,11 @@ import { r3f } from '@/helpers/global'
 import * as THREE from 'three'
 import { Perf } from 'r3f-perf'
 import { CSSProperties } from 'react'
+import dynamic from 'next/dynamic'
+
+const NoiseGrid = dynamic(() => import('@/components/canvas/NoiseGrid').then((mod) => mod.NoiseGrid), {
+  ssr: false,
+})
 
 interface SceneProps {
   className?: string
@@ -19,7 +24,7 @@ interface SceneProps {
 export default function Scene({ className = '', style, children, eventSource, eventPrefix, ...props }: SceneProps) {
   // Everything defined in here will persist between route changes, only children are swapped
   return (
-    <div className={className}>
+    <div className={`w-full h-full ${className}`} style={{ width: '100vw', height: '100vh', ...style }}>
       <Canvas {...props} onCreated={(state) => (state.gl.toneMapping = THREE.ACESFilmicToneMapping)}>
         {/* @ts-ignore */}
         <r3f.Out />

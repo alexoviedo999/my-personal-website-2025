@@ -1,6 +1,6 @@
 import { Layout } from '@/components/dom/Layout'
 import DropdownMenu from '@/components/dom/DropdownMenu'
-import '@/global.css'
+import './global.css'
 import Link from 'next/link'
 
 export const metadata = {

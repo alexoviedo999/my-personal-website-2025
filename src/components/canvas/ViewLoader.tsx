@@ -26,7 +26,7 @@ interface ViewLoaderProps {
 export const ViewLoader = ({ children, className = '', fallback = <CanvasLoader /> }: ViewLoaderProps) => {
   return (
     <CanvasProvider>
-      <div className={`relative ${className}`}>
+      <div className={`relative h-full w-full ${className}`}>
         <Suspense fallback={fallback}>
           <View>{children}</View>
         </Suspense>
