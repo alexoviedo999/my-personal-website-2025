@@ -43,7 +43,7 @@ export default function Portal({
       <RoundedBox
         name={name}
         args={[2, 3, 0.1]}
-        onDoubleClick={() => setActive(active === name ? null : name)}
+        onClick={() => setActive(active === name ? null : name)}
         onPointerEnter={() => setHovered(name)}
         onPointerLeave={() => setHovered(null)}
       >

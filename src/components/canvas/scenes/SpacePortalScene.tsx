@@ -11,6 +11,7 @@ import { OpWaveEye } from '@/components/canvas/OpWaveEye'
 import { Triangle } from '@/components/canvas/Triangle'
 import { Timetunnel } from '@/components/canvas/Timetunnel'
 import { Picasso } from '@/components/canvas/Picasso'
+import { Rig } from '@/components/canvas/Rig'
 import { useCanvas } from '../CanvasContext'
 
 const Portal = dynamic(() => import('@/components/canvas/Portal').then((mod) => mod.default), { ssr: false })
@@ -117,15 +118,7 @@ export const SpacePortalScene = () => {
             />
           </mesh>
 
-          {cameraControls && (
-            <OrbitControls
-              enableZoom={true}
-              enablePan={true}
-              minDistance={5}
-              maxDistance={30}
-              maxPolarAngle={Math.PI / 2 - 0.1}
-            />
-          )}
+          {cameraControls && <Rig />}
         </group>
       </Skybox>
       <Environment preset={sceneConfig.environment} />
